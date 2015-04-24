@@ -5,8 +5,18 @@ package Clavardage;
  */
 import javax.swing.*;
 import java.awt.*;
+import java.net.Socket;
 
-public class Client {
+public class Client  {
+
+    Socket socket;
+
+    public Client() {
+
+        //  Connexion conn = new Connexion(socket);
+
+    }
+
     private static void creerEtAfficherIug() {
         JFrame frame = new JFrame("Client de clavardage");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -17,6 +27,7 @@ public class Client {
         frame.setVisible(true);
     }
 
+
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -24,4 +35,9 @@ public class Client {
             }
         });
     }
-}
+
+
+    }
+
+
+
