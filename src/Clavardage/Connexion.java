@@ -31,12 +31,12 @@ public class Connexion implements Runnable
 
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-          //  userName = reader.readLine();
-           // ConfirmUserName();
-            line = userName + " viens de joindre la conversation";
+            userName = reader.readLine();
+            ConfirmUserName();
+           line = userName + " viens de joindre la conversation";
             while(!end)
             {
-               // line = reader.readLine();
+                line = reader.readLine();
                 if(!line.isEmpty())
                     line = userName + ": " +  ConfirmLine(line);
                 else

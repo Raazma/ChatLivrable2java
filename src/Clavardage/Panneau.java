@@ -126,21 +126,22 @@ public class Panneau extends JPanel {
             protected Boolean doInBackground()throws Exception {
                 boolean end = false;
                 try {
+                    BufferedReader reader;
                         while(!end) {
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                            publish(reader.readLine());
+                        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                            publish("VG");
                         }
 
                 }
                 catch (IOException e){
-                    System.out.print("Erreur lors de la lecture");
+                    System.out.print(e);
                 }
                 return true;
             }
             @Override
             protected void process(List<String> chunks) {
 
-                zoneMessages.setText(chunks.get(chunks.size()-1));
+                zoneMessages.append(chunks.get(chunks.size()-1) +"\n" );
             }
             protected void done() {
                 zoneMessages.setText("yolo");
@@ -154,8 +155,9 @@ public class Panneau extends JPanel {
         try {
             System.out.print("Je sendd !!!");
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-            writer.print(conn.line = fieldTexte.getText());
+            writer.print(fieldTexte.getText());
             System.out.print(fieldTexte.getText());
+            fieldTexte.setText("");
         }
         catch (IOException e){}
 
