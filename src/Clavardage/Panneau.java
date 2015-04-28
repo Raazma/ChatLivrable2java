@@ -25,6 +25,7 @@ public class Panneau extends JPanel {
     JPanel pan0;
     JTextField fieldTexte;
     JButton boutonConnexion;
+    PrintWriter writer = null;
 
     public Panneau() {
         setLayout(new GridLayout(0, 1)); // une seule colonne
@@ -114,6 +115,7 @@ public class Panneau extends JPanel {
            conn = new Connexion(socket);
            conn.userName = fieldPseudo.getText();
           boutonConnexion.enableInputMethods(true);
+           writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
        }
        catch (IOException u) {
            System.out.print(u);
@@ -125,11 +127,13 @@ public class Panneau extends JPanel {
             @Override
             protected Boolean doInBackground()throws Exception {
                 boolean end = false;
+                String line = new String();
                 try {
-                    BufferedReader reader;
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         while(!end) {
-                        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                            publish("VG");
+                      line =  reader.readLine();
+                            if(line != null)
+                            publish(line);
                         }
 
                 }
@@ -152,14 +156,11 @@ public class Panneau extends JPanel {
     }
     private void Ecrire(){
 
-        try {
             System.out.print("Je sendd !!!");
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-            writer.print(fieldTexte.getText());
-            System.out.print(fieldTexte.getText());
+            writer.println(fieldTexte.getText());
+            System.out.println(fieldTexte.getText());
+            writer.flush();
             fieldTexte.setText("");
-        }
-        catch (IOException e){}
 
     }
 
