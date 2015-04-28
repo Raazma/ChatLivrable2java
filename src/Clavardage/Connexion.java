@@ -37,8 +37,10 @@ public class Connexion implements Runnable
             while(!end)
             {
                 line = reader.readLine();
-                if(!line.isEmpty())
-                    line = userName + ": " +  ConfirmLine(line);
+                if(!line.isEmpty()) {
+                    if(!(line.trim().isEmpty()))
+                        line = userName + ": " + ConfirmLine(line);
+                }
                 else
                 {
                     end = true;

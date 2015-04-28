@@ -26,6 +26,7 @@ public class Panneau extends JPanel {
     JTextField fieldTexte;
     JButton boutonConnexion;
     PrintWriter writer = null;
+    boolean Connected = false;
 
     public Panneau() {
         setLayout(new GridLayout(0, 1)); // une seule colonne
@@ -67,8 +68,14 @@ public class Panneau extends JPanel {
         boutonConnexion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Connection();
-                StartWorker();
+                if(!fieldAdresse.getText().isEmpty() && !fieldPseudo.getText().isEmpty()) {
+                    Connection();
+                    StartWorker();
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(pan0, "Veuiller entrer une adresse et un pseudo", "Attention!", JOptionPane.WARNING_MESSAGE);
+                }
             }
         });
 
@@ -76,6 +83,9 @@ public class Panneau extends JPanel {
         boutonQuitter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(Connected)
+                    writer.println("");
+
                 System.exit(0);
             }
         });
@@ -110,15 +120,28 @@ public class Panneau extends JPanel {
 
        socketAdress = new InetSocketAddress(fieldAdresse.getText(),50000);
        try {
-           socket = new Socket();
-           socket.connect(socketAdress);
-           conn = new Connexion(socket);
-           conn.userName = fieldPseudo.getText();
-          boutonConnexion.enableInputMethods(true);
-           writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+           if(Connected){
+             writer.println("");
+               writer.flush();
+               Connected = false;
+
+           }
+           else {
+               socket = new Socket();
+               socket.connect(socketAdress);
+               conn = new Connexion(socket);
+               conn.userName = fieldPseudo.getText();
+               boutonConnexion.enableInputMethods(true);
+               writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+               writer.println(fieldPseudo.getText());
+               writer.flush();
+               boutonConnexion.setText("Deconnexion");
+               Connected = true;
+           }
+
        }
        catch (IOException u) {
-           System.out.print(u);
+           System.out.println("Problem whileee Conecctinggg");
        }
    }
     private void StartWorker(){
@@ -132,23 +155,34 @@ public class Panneau extends JPanel {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         while(!end) {
                       line =  reader.readLine();
-                            if(line != null)
-                            publish(line);
+                            if(!line.isEmpty()) {
+                                if (line != null )
+
+                                    publish(line);
+                                if(cboxResterConnecte.isSelected()) {
+                                    Thread.sleep(100);
+                                    writer.println("   ");
+                                    writer.flush();
+                                }
+                            }
+                            else{System.exit(1);}
+
                         }
 
                 }
                 catch (IOException e){
-                    System.out.print(e);
+                   System.out.println("Erreur lors de la lecture");
                 }
                 return true;
             }
             @Override
             protected void process(List<String> chunks) {
 
+                if(!(chunks.get(chunks.size()-1).trim().isEmpty()))
                 zoneMessages.append(chunks.get(chunks.size()-1) +"\n" );
             }
             protected void done() {
-                zoneMessages.setText("yolo");
+                System.exit(1);
             }
         };
         worker.execute();
@@ -156,12 +190,12 @@ public class Panneau extends JPanel {
     }
     private void Ecrire(){
 
-            System.out.print("Je sendd !!!");
-            writer.println(fieldTexte.getText());
-            System.out.println(fieldTexte.getText());
-            writer.flush();
-            fieldTexte.setText("");
-
+           if(Connected) {
+               writer.println(fieldTexte.getText());
+               System.out.println(fieldTexte.getText());
+               writer.flush();
+               fieldTexte.setText("");
+           }
     }
 
 }

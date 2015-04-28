@@ -46,7 +46,7 @@ public class Server
                         tCon.setDaemon(true);
                         activeCon.add(connexion);
                         tCon.start();
-                        WelcomeMessage();
+                       // WelcomeMessage();
                         System.out.println("Client connecter");
                     } else
                     {
@@ -91,7 +91,7 @@ public class Server
             int i = 0;
             String line = new String();
             //  line = reader.readLine();
-            if(msg!=null)
+            if(msg!=null )
             {
                 while(activeCon.size() > i)
                 {
@@ -132,13 +132,15 @@ public class Server
         {
             for(int i = 0; i < activeCon.size(); i++)
             {
+
                 line = activeCon.get(i).line;
+
                 if(line != null)
                     if(!line.isEmpty())
                     {
-                        System.out.print((line));
-                        Distribute(line);
-                        activeCon.get(i).line = null;
+                               System.out.print((line));
+                               Distribute(line);
+                               activeCon.get(i).line = null;
                     }
                     else
                     {
